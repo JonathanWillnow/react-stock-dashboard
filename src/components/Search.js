@@ -28,7 +28,7 @@ const Search = () => {
     setInput("");
     setBestMatches([]);
   };
-
+  
   return (
     <div
       className={`flex items-center my-4 border-2 rounded-md relative z-50 w-96 ${
