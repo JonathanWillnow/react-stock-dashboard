@@ -6,15 +6,15 @@ import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
-const IS = ({ details }) => {
+const CF = ({ details }) => {
   console.log(details);
   const { darkMode } = useContext(ThemeContext);
 
   const detailsList = {
-    "Gross Profit": "Gross Profit",
-    "Net Income": "Net Income",
-    "Operating Income": "Operating Income",
-    "Revenue": "Revenue",
+    "FCF": "FCF",
+    "Financial CF": "Financial CF",
+    "Investing CF": "Investing CF",
+    "Operating CF": "Operating CF",
   };
 
   if (Object.keys(details).length === 0) {
@@ -86,4 +86,4 @@ const IS = ({ details }) => {
   );
 };
 
-export default IS;
+export default CF;

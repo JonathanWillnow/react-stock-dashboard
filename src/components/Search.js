@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import ThemeContext from "../context/ThemeContext";
 import { searchSymbol } from "../utils/api/stock-api";
 import SearchResults from "./SearchResults";
@@ -7,15 +7,31 @@ import { SearchIcon, XIcon } from "@heroicons/react/solid";
 const Search = () => {
   const { darkMode } = useContext(ThemeContext);
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(""); // State for the input value
+  const [bestMatches, setBestMatches] = useState([]); // State for the search results
+  const dropdownRef = useRef(null); // Reference to the dropdown element
 
-  const [bestMatches, setBestMatches] = useState([]);
+  useEffect(() => {
+    // Add event listener when component mounts
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      // Clean up event listener when component unmounts
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event) => {
+    // Handle click outside the dropdown
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      clear(); // Clear input and best matches to close the dropdown
+    }
+  };
 
   const updateBestMatches = async () => {
     try {
       if (input) {
         const searchResults = await searchSymbol(input);
-        const result = searchResults.result;
+        const result = searchResults.result.slice(0, 10); // Get only the top 10 results
         setBestMatches(result);
       }
     } catch (error) {
@@ -25,15 +41,16 @@ const Search = () => {
   };
 
   const clear = () => {
-    setInput("");
-    setBestMatches([]);
+    setInput(""); // Clear the input value
+    setBestMatches([]); // Clear the search results
   };
-  
+
   return (
     <div
       className={`flex items-center my-4 border-2 rounded-md relative z-50 w-96 ${
         darkMode ? "bg-gray-900 border-gray-800" : "bg-white border-neutral-200"
       }`}
+      ref={dropdownRef} // Assign the reference to the dropdown element
     >
       <input
         type="text"

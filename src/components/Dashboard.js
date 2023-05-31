@@ -4,10 +4,11 @@ import Overview from "./Overview";
 import Details from "./Details";
 import IS from "./IncomeStatement";
 import FD from "./FactorData";
+import CF from "./CFStatement";
 import Chart from "./Chart";
 import Header from "./Header";
 import StockContext from "../context/StockContext";
-import { fetchStockDetails, fetchQuote, fetchIncomeStatementData , fetchfactordata} from "../utils/api/stock-api";
+import { fetchStockDetails, fetchQuote, fetchIncomeStatementData , fetchfactordata, fetchCFStatementData} from "../utils/api/stock-api";
 
 const Dashboard = () => {
   const { darkMode } = useContext(ThemeContext);
@@ -17,11 +18,12 @@ const Dashboard = () => {
   const [stockDetails, setStockDetails] = useState({});
 
   const [incomeStatement, setIncomeStatement] = useState({});
+  const [CFStatement, setCFStatement] = useState({});
 
   const [factordata, setfactordata] = useState({});
 
   const [quote, setQuote] = useState({});
-
+  
   useEffect(() => {
     
     const updateIS = async () => {
@@ -38,7 +40,7 @@ const Dashboard = () => {
             item["Revenue"],
           ],
         }));
-    
+        console.log(formattedData);
         setIncomeStatement(formattedData);
       } catch (error) {
         setIncomeStatement([]);
@@ -46,7 +48,27 @@ const Dashboard = () => {
       }
     };
     
+    const updateCF = async () => {
+      try {
+        const result = await fetchCFStatementData(stockSymbol);
+        console.log(result);
     
+        const formattedData = Object.values(result).map((item) => ({
+          label: item.year.toString(),
+          data: [
+            item["FCF"],
+            item["Financial CF"],
+            item["Investing CF"],
+            item["Operating CF"],
+          ],
+        }));
+        console.log(formattedData);
+        setCFStatement(formattedData);
+      } catch (error) {
+        setCFStatement([]);
+        console.log(error);
+      }
+    };
     
 
     const updatefactordata = async () => {
@@ -82,6 +104,7 @@ const Dashboard = () => {
     };
 
     updateIS();
+    updateCF();
     updatefactordata();
     updateStockDetails();
     updateStockOverview();
@@ -115,6 +138,9 @@ const Dashboard = () => {
       </div>
       <div className="col-span-2 row-span-4">
        <IS details={incomeStatement} />
+      </div>
+      <div className="col-span-2 row-span-4">
+       <CF details={CFStatement} />
       </div>
     </div>
   );
