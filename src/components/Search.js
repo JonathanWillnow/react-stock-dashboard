@@ -9,6 +9,7 @@ const Search = () => {
 
   const [input, setInput] = useState(""); // State for the input value
   const [bestMatches, setBestMatches] = useState([]); // State for the search results
+  const [selectedSymbol, setSelectedSymbol] = useState(null); // State for the selected symbol
   const dropdownRef = useRef(null); // Reference to the dropdown element
 
   useEffect(() => {
@@ -19,6 +20,18 @@ const Search = () => {
       document.removeEventListener("click", handleOutsideClick);
     };
   }, []);
+
+  useEffect(() => {
+    // Automatically select exact match if found
+    if (selectedSymbol && bestMatches.length > 0) {
+      const exactMatch = bestMatches.find(
+        (match) => match.symbol === selectedSymbol
+      );
+      if (exactMatch) {
+        setInput(exactMatch.symbol);
+      }
+    }
+  }, [selectedSymbol, bestMatches]);
 
   const handleOutsideClick = (event) => {
     // Handle click outside the dropdown
@@ -31,8 +44,9 @@ const Search = () => {
     try {
       if (input) {
         const searchResults = await searchSymbol(input);
-        const result = searchResults.result.slice(0, 10); // Get only the top 10 results
+        const result = searchResults.result.slice(0, 5); // Get only the top 5 results
         setBestMatches(result);
+        setSelectedSymbol(null); // Reset selected symbol
       }
     } catch (error) {
       setBestMatches([]);
@@ -43,6 +57,11 @@ const Search = () => {
   const clear = () => {
     setInput(""); // Clear the input value
     setBestMatches([]); // Clear the search results
+    setSelectedSymbol(null); // Reset selected symbol
+  };
+
+  const handleSelectSymbol = (symbol) => {
+    setSelectedSymbol(symbol);
   };
 
   return (
@@ -78,7 +97,10 @@ const Search = () => {
         <SearchIcon className="h-4 w-4 fill-gray-100" />
       </button>
       {input && bestMatches.length > 0 ? (
-        <SearchResults results={bestMatches} />
+        <SearchResults
+          results={bestMatches}
+          onSelectSymbol={handleSelectSymbol}
+        />
       ) : null}
     </div>
   );

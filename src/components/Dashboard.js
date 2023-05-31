@@ -4,7 +4,7 @@ import Overview from "./Overview";
 import Details from "./Details";
 import IS from "./IncomeStatement";
 import FD from "./FactorData";
-import CF from "./CFStatement";
+import CF from "./CFStatement"
 import Chart from "./Chart";
 import Header from "./Header";
 import StockContext from "../context/StockContext";

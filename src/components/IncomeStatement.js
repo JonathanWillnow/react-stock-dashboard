@@ -64,9 +64,9 @@ const IS = ({ details }) => {
         // Add a callback to format the y-axis labels in millions or billions
         ticks: {
           callback: function (value) {
-            if (value >= 1000000000) {
+            if (Math.abs(value) >= 1000000000) {
               return (value / 1000000000).toLocaleString() + "B";
-            } else if (value >= 1000000) {
+            } else if (Math.abs(value) >= 1000000) {
               return (value / 1000000).toLocaleString() + "M";
             } else {
               return value.toLocaleString();
