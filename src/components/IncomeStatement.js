@@ -1,46 +1,58 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Card from "./Card";
 import ThemeContext from "../context/ThemeContext";
+import { Bar } from "react-chartjs-2";
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 
 const IS = ({ details }) => {
   const { darkMode } = useContext(ThemeContext);
-  
+
   const detailsList = {
-    // name: "Name",
-    "Net Income" : "Net Income",
-    // country: "Country",
-    // currency: "Currency",
-    // exchange: "Exchange",
-    // ipo: "IPO Date",
-    // marketCapitalization: "Market Capitalization",
-    // finnhubIndustry: "Industry",
+    "Gross Profit": "Gross Profit",
+    "Net Income": "Net Income",
+    "Operating Income": "Operating Income",
+    "Revenue": "Revenue",
   };
 
-  const convertMillionToBillion = (number) => {
-    return (number / 1000).toFixed(2);
+
+  const formattedData = Object.values(details).map((item) => ({
+    label: item.year,
+    data: [
+      item["Gross Profit"],
+      item["Net Income"],
+      item["Operating Income"],
+      item["Revenue"],
+    ],
+  }));
+
+  const data = {
+    labels: Object.values(details).map((item) => item.year),
+    datasets: Object.keys(detailsList).map((item, index) => ({
+      label: detailsList[item],
+      data: formattedData.map((item) => item.data[index]),
+      backgroundColor: `rgba(75, 192, 192, 0.6)`,
+      borderColor: `rgba(75, 192, 192, 1)`,
+      borderWidth: 1,
+    })),
+  };
+
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        maxTicksLimit: 5,
+        precision: 0,
+      },
+    },
   };
 
   return (
     <Card>
-      <ul
-        className={`w-full h-full flex flex-col justify-between divide-y-1 ${
-          darkMode ? "divide-gray-800" : null
-        }`}
-      >
-        {Object.keys(detailsList).map((item) => {
-          return (
-            <li key={item} className="flex-1 flex justify-between items-center">
-              <span>{detailsList[item]}</span>
-              <span className="font-bold">
-                {item === "marketCapitalization"
-                  ? `${convertMillionToBillion(details[item])}B`
-                  : details[item]}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <div>
+        <Bar data={data} options={options} />
+      </div>
     </Card>
   );
 };

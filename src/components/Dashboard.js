@@ -23,13 +23,14 @@ const Dashboard = () => {
   const [quote, setQuote] = useState({});
 
   useEffect(() => {
+    
     const updateIS = async () => {
       try {
         const result = await fetchIncomeStatementData(stockSymbol);
         console.log(result);
     
         const formattedData = Object.values(result).map((item) => ({
-          label: item.year,
+          label: item.year.toString(),
           data: [
             item["Gross Profit"],
             item["Net Income"],
@@ -44,6 +45,8 @@ const Dashboard = () => {
         console.log(error);
       }
     };
+    
+    
     
 
     const updatefactordata = async () => {
@@ -110,7 +113,7 @@ const Dashboard = () => {
       <div className="col-span-1 row-span-4">
        <FD details={factordata} />
       </div>
-      <div className="col-span-1 row-span-4">
+      <div className="col-span-2 row-span-4">
        <IS details={incomeStatement} />
       </div>
     </div>
