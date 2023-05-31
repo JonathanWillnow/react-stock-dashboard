@@ -2,25 +2,19 @@ import React, { useContext } from "react";
 import Card from "./Card";
 import ThemeContext from "../context/ThemeContext";
 
-const IS = ({ details }) => {
+const FD = ({ details }) => {
   const { darkMode } = useContext(ThemeContext);
-  
+
   const detailsList = {
-    "P/E" : "P/E",
-    "P/B" : "P/B",
-    "EV/RV" : "EV/RV",
-    "P/S TTM" : "P/S TTM",
-    "\u0394Rev" : "\u0394Rev",
-    // country: "Country",
-    // currency: "Currency",
-    // exchange: "Exchange",
-    // ipo: "IPO Date",
-    // marketCapitalization: "Market Capitalization",
-    // finnhubIndustry: "Industry",
+    "P/E": "P/E",
+    "P/B": "P/B",
+    "EV/RV": "EV/RV",
+    "P/S TTM": "P/S TTM",
+    "\u0394Rev": "\u0394Rev",
   };
 
-  const convertMillionToBillion = (number) => {
-    return (number / 1000).toFixed(2);
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
   };
 
   return (
@@ -36,8 +30,8 @@ const IS = ({ details }) => {
               <span>{detailsList[item]}</span>
               <span className="font-bold">
                 {item === "marketCapitalization"
-                  ? `${convertMillionToBillion(details[item])}B`
-                  : details[item]}
+                  ? `${formatNumber(details[item])}B`
+                  : formatNumber(details[item])}
               </span>
             </li>
           );
@@ -47,4 +41,4 @@ const IS = ({ details }) => {
   );
 };
 
-export default IS;
+export default FD;

@@ -26,13 +26,25 @@ const Dashboard = () => {
     const updateIS = async () => {
       try {
         const result = await fetchIncomeStatementData(stockSymbol);
-        // console.log(result[0]) 
-        setIncomeStatement(result[0]);
+        console.log(result);
+    
+        const formattedData = Object.values(result).map((item) => ({
+          label: item.year,
+          data: [
+            item["Gross Profit"],
+            item["Net Income"],
+            item["Operating Income"],
+            item["Revenue"],
+          ],
+        }));
+    
+        setIncomeStatement(formattedData);
       } catch (error) {
-        setIncomeStatement({});
+        setIncomeStatement([]);
         console.log(error);
       }
     };
+    
 
     const updatefactordata = async () => {
       try {
